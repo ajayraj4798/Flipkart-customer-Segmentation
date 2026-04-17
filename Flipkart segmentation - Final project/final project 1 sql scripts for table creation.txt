@@ -1,0 +1,158 @@
+create table browsing_events (
+    customer_id varchar(100)primary key,             
+    sessions_id varchar(100),    
+    session_date date,
+    device varchar(100),
+    city varchar (100),
+    total_events int,
+	event_seq int,
+	page_type varchar(150),
+	product_id varchar (100),
+	category_viewed varchar (100),
+	time_spent_sec int,
+	timestamp timestamp,
+	added_to_cart varchar(70),
+	added_to_wishlist varchar(70)
+    
+);
+
+create table products (
+product_id varchar(60) primary key,
+brand varchar (60),
+category varchar (100),
+subcategory varchar(100),
+price_mrp numeric(12,2),
+price_segment varchar(80),
+avg_rating numeric (5,3),
+total_reviews int,
+in_stock varchar (70),
+flipkart_assured varchar (70)
+);
+
+
+create table customer_preferences (
+customer_id varchar(100)primary key,
+preferred_categories varchar(100),
+wishlist_product_id varchar(70),
+saved_searches varchar(100),
+price_range_min numeric (10,3),
+price_range_max numeric (10,3),
+notification_opt_in varchar (50),
+flipkart_plus_member varchar(50),
+preferred_brands varchar(70),
+avg_sessions_duration_min numeric (10,3),
+last_app_open date
+);
+
+create table campaign_responses (
+customer_id varchar (100) primary key,
+campaign_id varchar (100),
+campaign_name varchar (100),
+campaign_type varchar (70),
+sent_date date,
+opened varchar(80),
+clicked varchar(80),
+converted varchar(80),
+response_date timestamptz,
+status varchar (80),
+revenue_generated numeric (10,5)
+);
+
+
+
+create table orders (
+order_id varchar (50) primary key,
+customer_id varchar (50),
+order_date date,
+order_status varchar(60),
+payment_method varchar(70),
+delivery_days int,
+discount_code varchar(80),
+is_festive_order varchar (60)
+);
+
+
+create table order_items (
+item_id varchar (60)primary key,
+order_id varchar (80),
+product_id varchar (80),
+quantity int,
+unit_price numeric,
+discount_percent int,
+discount_amount numeric,
+final_price numeric
+);
+
+create table customers (
+customer_id varchar (80) primary key,
+full_name varchar (100),
+email varchar (250),
+email_scores int,
+action_taken varchar(50),
+phone bigint,
+gender varchar(80),
+age int,
+city varchar(200),
+state varchar(200),
+tier varchar (60),
+region varchar (60),
+signup_date date,
+preferred_language varchar (100)
+);
+
+create table city_tier_mapping(
+city varchar (100),
+state varchar (100),
+tier varchar (50),
+region varchar (50)
+);
+
+with cte1 as (
+select order_id, sum(final_price)as K_1 from order_items group by order_id)
+select C.customer_id, current_date - max (O.order_date) as recency, count (O.order_id) as frequency, sum (C1.K_1) from 
+customers C join orders O on C.customer_id = O.customer_id join cte1 C1 on O.order_id = C1.order_id
+group by C.customer_id
+
+
+
+
+
+select 
+    c.customer_id,
+    c.full_name,      
+    o.order_id,
+    o.order_date,
+    oi.product_id,
+    oi.quantity,
+    oi.final_price
+from customers c
+join orders o on c.customer_id = o.customer_id
+join order_items oi on o.order_id = oi.order_id;
+
+
+
+
+
+
+
+truncate table customer_preferences;
+
+select flipkart_plus_member from customer_preferences
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
